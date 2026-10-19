@@ -26,13 +26,11 @@
 		"staging": {
 			"name": "christmas-watch-list-v2-staging",
 			"workers_dev": true,
-			// BLOCKER: replace with the id from
-			// `wrangler hyperdrive create cwl-v2-staging --connection-string="<V2 Neon URL>" --caching-disabled`
-			// (see docs/decisions.md D1–D3).
+			// Created with `wrangler hyperdrive create ... --caching-disabled` (docs/decisions.md D1–D3).
 			"hyperdrive": [
 				{
 					"binding": "HYPERDRIVE",
-					"id": "00000000000000000000000000000000",
+					"id": "7b90cabc6f1f41db842652f5b029bc42",
 					"localConnectionString": "postgres://postgres:postgres@localhost:5432/christmas_watch_list"
 				}
 			]
