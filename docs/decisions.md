@@ -60,3 +60,32 @@ One "festive midnight" palette (`--midnight`, `--berry`, `--mint`, `--holly`, `-
 ### D11 — Workers Free CPU budget (risk)
 
 Workers Free allows 10 ms CPU per request. Google OAuth + Email OTP avoid password hashing, which is the usual Better Auth CPU hog. Watch CPU time in Workers Observability on staging (Day 2).
+
+## 2026-10-19 · Day 2 auth + staging
+
+### D12 — Better Auth wiring on Workers
+
+- `createAuth(db, env)` (`src/lib/server/auth.ts`) builds Better Auth **per request**, sharing the request's Drizzle client. `hooks.server.ts` exposes lazy `locals.db()` / `locals.auth()`, so signed-out pages open no DB connection; the client is closed with `waitUntil` after the response.
+- Routes: Better Auth handles `/api/auth/*`; `/sign-in` (Google + Email OTP form actions, no client auth library), `/sign-out`, `/api/health` (`select 1` through Hyperdrive).
+- Server-side `auth.api.*` calls + the `sveltekitCookies` plugin set cookies through SvelteKit's `cookies`. Kit 3 needs `redirect(303, url, { external: [...] })` for the Google hop.
+- `session.cookieCache` (5 min, signed). Page loads verify it with `getCookieCache` and only build Better Auth / hit the DB on a miss. Trade-off: a session revoked elsewhere stays readable for ≤5 min.
+- OTPs: 6 digits, 10 min, stored hashed, 3 attempts (Better Auth default). Emails go through Resend's REST API with one `fetch` (no SDK).
+- `BETTER_AUTH_URL` is a plain var per environment in `wrangler.jsonc`. Secrets are declared in `secrets.required` (typed by `wrangler types`; `wrangler deploy` refuses to create a new Worker without them, so the first deploy uses `wrangler secret bulk`).
+- `EMAIL_FROM` is optional. Unset = Email OTP shows "not set up yet" and Google still works. The Resend key in agent secrets is send-only and `christmaswatchlist.co.uk` is **not** verified on that Resend account (verifying needs DNS records, so it waits for cutover). Staging's `EMAIL_FROM` is a Worker secret set outside this repo; Resend accepts it.
+
+### D13 — CPU on Workers Free: measured, borderline on cold isolates
+
+Measured with `wrangler tail` on staging (account is Workers **Free**; `cpuTime` per request):
+
+| Path | Median | p90 | Max |
+| --- | --- | --- | --- |
+| `/` signed out | 5 ms | ~25 ms | ~55 ms |
+| `/`, `/my-list` signed in (cookie cache) | 5 ms | ~27 ms | ~60 ms |
+| `/api/auth/*` | ~10 ms | ~25 ms | ~30 ms |
+| Google sign-in start (POST) | 40–100 ms | n/a | n/a (rare, once per sign-in) |
+
+The spikes are first requests in a fresh isolate (lazy module evaluation + JIT); warm isolates are 1–5 ms. All ~400 sampled invocations finished `ok` — none `exceededCpu`. Cloudflare allows isolates to run over occasionally and terminates only Workers that are *consistently* over.
+
+Mitigations in place: the Kit `init` hook warms Better Auth once per isolate during **startup** (1 s budget, not the request's 10 ms); cookie-cache session reads skip Better Auth entirely; no password hashing.
+
+If `exceededCpu` (error 1102) shows up in Workers Observability during beta, the next levers are: prerender static shells, trim the bundle (3.5 MB uncompressed), or Workers Paid ($5/mo) — the last one needs Andrew's sign-off (free-tier rule).
