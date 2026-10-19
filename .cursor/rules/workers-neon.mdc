@@ -1,0 +1,18 @@
+---
+description: Cloudflare Workers + Hyperdrive + Neon + Drizzle + Better Auth patterns
+globs: src/lib/server/**,src/routes/**/+*.server.ts,src/routes/**/+server.ts,src/hooks.server.ts,wrangler.jsonc,drizzle.config.ts
+alwaysApply: false
+---
+
+# Workers, Neon, Drizzle, Better Auth
+
+- Bindings: `import { env, waitUntil } from 'cloudflare:workers'`. adapter-cloudflare 8 / SvelteKit 3 has **no** `event.platform`.
+- DB per request: `const db = await connectDb(env.HYPERDRIVE.connectionString)` then `waitUntil(db.$client.end())`. Never cache a client at module scope.
+- Driver is **node-postgres (`pg`)**. Cloudflare documents Drizzle + Postgres.js over Hyperdrive as unsupported — don't switch.
+- Hyperdrive is on Workers Free (100k queries/day, ~20 origin connections). Staging config is created with `--caching-disabled` so auth/session and read-after-write ticks are always fresh.
+- Workers Free CPU limit is 10 ms/request: no password hashing (we only use Google + Email OTP), no heavy per-request work, keep TMDB/ingest in `scripts/`.
+- Better Auth instance is created per request from `env` (secrets via `wrangler secret put`, `.dev.vars` locally). Drizzle adapter with the shared schema.
+- Schema changes: edit `src/lib/server/db/schema.ts` → `pnpm db:generate` → commit `drizzle/`. CI fails if they drift.
+- `DATABASE_URL` for migrations is the **V2** Neon direct URL. Never point anything at V1 production; V1 access is read-only and only from `scripts/`.
+- After editing `wrangler.jsonc`, run `pnpm cf:types` and commit `worker-configuration.d.ts`.
+- Do not add custom domains/routes or touch DNS until cutover.

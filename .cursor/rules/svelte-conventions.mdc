@@ -1,0 +1,16 @@
+---
+description: Svelte 5 / SvelteKit 3 conventions for this repo
+globs: src/**/*.svelte,src/**/*.ts
+alwaysApply: false
+---
+
+# Svelte conventions
+
+- Svelte 5 runes only (`$props`, `$state`, `$derived`, `$effect` sparingly). Runes mode is forced in `vite.config.ts`.
+- Internal links: `href={resolve('/route')}` from `$app/paths`; current URL from `page` in `$app/state`.
+- Imports: `#lib/...` with explicit extensions (`#lib/utils.js`). Relative imports inside `src/lib` are fine.
+- Data: `+page.server.ts` `load` + form actions with progressive enhancement. No client-side fetch layers.
+- Styling: Tailwind utilities + theme tokens (`bg-midnight`, `text-gold`, `bg-berry`, …). Use `cn()` from `#lib/utils.js` to merge classes.
+- Mobile first: thumb targets ≥ 44px (`min-h-11`), respect `env(safe-area-inset-*)`, content clears the tab bar (`--tab-bar-height`).
+- Motion: CSS/Svelte transitions; wrap anything non-essential in `motion-safe:` or a `prefers-reduced-motion` check.
+- Use `switch` with a `never` default for union/enum handling so new variants fail to compile.
