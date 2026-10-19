@@ -3,13 +3,14 @@
 
 # `openssl rand -base64 32`
 BETTER_AUTH_SECRET=
-# Local: http://localhost:5173 · Staging: https://christmas-watch-list-v2-staging.<account>.workers.dev
-BETTER_AUTH_URL=http://localhost:5173
+# Plain var in wrangler.jsonc (localhost here, workers.dev URL for staging); override only if needed.
+# BETTER_AUTH_URL=http://localhost:5173
 
 # Google OAuth client (add localhost + staging redirect URIs: <BETTER_AUTH_URL>/api/auth/callback/google)
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 
-# Resend, for Email OTP
+# Resend, for Email OTP. EMAIL_FROM must be on a Resend-verified domain; leave it unset and
+# Email OTP shows "not set up yet" (Google still works).
 RESEND_API_KEY=
-EMAIL_FROM="Christmas Watch List <noreply@christmaswatchlist.co.uk>"
+# EMAIL_FROM="Christmas Watch List <noreply@christmaswatchlist.co.uk>"

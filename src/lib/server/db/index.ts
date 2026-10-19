@@ -20,3 +20,8 @@ export async function connectDb(connectionString: string) {
 }
 
 export type Db = Awaited<ReturnType<typeof connectDb>>;
+
+/** Connection-less Drizzle instance for exercising code paths that must not hit the DB. */
+export function offlineDb() {
+	return drizzle.mock({ schema, casing }) as unknown as Db;
+}
