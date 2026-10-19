@@ -2,7 +2,7 @@
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"name": "christmas-watch-list-v2",
 	"compatibility_date": "2026-10-19",
-	// nodejs_compat: postgres.js (TCP sockets) + Better Auth; includes AsyncLocalStorage.
+	// nodejs_compat: pg (TCP sockets) + Better Auth; includes AsyncLocalStorage.
 	"compatibility_flags": ["nodejs_compat"],
 	"main": ".svelte-kit/cloudflare/_worker.js",
 	"assets": {
@@ -21,6 +21,15 @@
 			"localConnectionString": "postgres://postgres:postgres@localhost:5432/christmas_watch_list"
 		}
 	],
+	// `vars` and `secrets` are not inherited by environments: keep env.staging in sync.
+	// EMAIL_FROM is optional (see src/app.d.ts): Email OTP reports "not set up" until it's a var or secret.
+	"vars": {
+		"BETTER_AUTH_URL": "http://localhost:5173"
+	},
+	// Set locally in .dev.vars, remotely with `wrangler secret put <NAME> --env staging`.
+	"secrets": {
+		"required": ["BETTER_AUTH_SECRET", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "RESEND_API_KEY"]
+	},
 	"env": {
 		// Staging on *.workers.dev only — no custom domain/routes until cutover.
 		"staging": {
@@ -33,7 +42,18 @@
 					"id": "7b90cabc6f1f41db842652f5b029bc42",
 					"localConnectionString": "postgres://postgres:postgres@localhost:5432/christmas_watch_list"
 				}
-			]
+			],
+			"vars": {
+				"BETTER_AUTH_URL": "https://christmas-watch-list-v2-staging.andrew-allison0411-6bb.workers.dev" // pragma: allowlist secret
+			},
+			"secrets": {
+				"required": [
+					"BETTER_AUTH_SECRET",
+					"GOOGLE_CLIENT_ID",
+					"GOOGLE_CLIENT_SECRET",
+					"RESEND_API_KEY"
+				]
+			}
 		}
 	}
 }
