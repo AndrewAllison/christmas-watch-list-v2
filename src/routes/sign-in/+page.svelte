@@ -73,7 +73,7 @@
 							name="otp"
 							inputmode="numeric"
 							autocomplete="one-time-code"
-							pattern="\d{6}"
+							pattern={'\\d{6}'}
 							maxlength="6"
 							required
 							class="{inputClass} tracking-[0.4em]"
