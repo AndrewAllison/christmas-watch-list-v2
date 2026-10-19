@@ -39,6 +39,6 @@ Local dev talks to Postgres at the `localConnectionString` in `wrangler.jsonc` (
 
 1. Create a **new** Neon project (or branch) for V2 — never reuse V1 production.
 2. `DATABASE_URL=<direct url> pnpm db:migrate`
-3. `pnpm wrangler hyperdrive create cwl-v2-staging --connection-string="<url>" --caching-disabled` and paste the id into `env.staging.hyperdrive` in `wrangler.jsonc`, then `pnpm cf:types`.
+3. `pnpm wrangler hyperdrive create cwl-v2-staging --connection-string="<url>" --caching-disabled` and paste the id into `env.staging.hyperdrive` in `wrangler.jsonc`, then `pnpm cf:types` to refresh local types.
 4. `pnpm wrangler secret put <NAME> --env staging` for each key in `.dev.vars.example`.
 5. `pnpm deploy:staging`

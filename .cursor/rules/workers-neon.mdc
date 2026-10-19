@@ -14,5 +14,5 @@ alwaysApply: false
 - Better Auth instance is created per request from `env` (secrets via `wrangler secret put`, `.dev.vars` locally). Drizzle adapter with the shared schema.
 - Schema changes: edit `src/lib/server/db/schema.ts` → `pnpm db:generate` → commit `drizzle/`. CI fails if they drift.
 - `DATABASE_URL` for migrations is the **V2** Neon direct URL. Never point anything at V1 production; V1 access is read-only and only from `scripts/`.
-- After editing `wrangler.jsonc`, run `pnpm cf:types` and commit `worker-configuration.d.ts`.
+- `worker-configuration.d.ts` is generated (gitignored) by `pnpm install`, `typecheck` and `build`; run `pnpm cf:types` after editing `wrangler.jsonc`.
 - Do not add custom domains/routes or touch DNS until cutover.

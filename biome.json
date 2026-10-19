@@ -6,7 +6,7 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"includes": ["**", "!**/worker-configuration.d.ts", "!drizzle/meta", "!pnpm-lock.yaml"]
+		"includes": ["**", "!drizzle/meta", "!pnpm-lock.yaml"]
 	},
 	"formatter": {
 		"enabled": true,
