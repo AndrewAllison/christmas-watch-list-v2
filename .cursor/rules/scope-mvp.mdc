@@ -1,0 +1,14 @@
+---
+description: MVP scope guard — four surfaces + PWA + lean effects; reject parked features
+alwaysApply: true
+---
+
+# MVP scope
+
+Only build: **Browse**, **My List**, **Tradition Tick**, **Season progress**, PWA offline ticks, lean festive effects.
+
+- Reject or flag requests for: admin UI, Mastra/MCP, share, recommendations, goals, mood, advanced search, uploads, EPG/broadcast schedules, web push, ratings-as-core, social features.
+- Routes: the four tab surfaces, auth, offline fallback. No `/admin`, no mega-search.
+- No feature flags — delete code rather than hide it.
+- Schema stays at `media`, `watch_events`, `user_media_state` + Better Auth tables. Ask before adding a table or column.
+- If a task seems to need something parked, stop and say so instead of building a lighter version.

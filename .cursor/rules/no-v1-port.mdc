@@ -1,0 +1,13 @@
+---
+description: Salvage V1 data and patterns, never its Next.js/React code
+alwaysApply: true
+---
+
+# No V1 port
+
+V1 (`AndrewAllison/christmas-watch-list`, Next.js on Vercel) is a **reference and data source only**.
+
+- Salvage: catalogue rows + `holidayRelevance`, `watch_events` + date precision, offline TMDB ingest scripts, Better Auth provider config, festive look as mood board.
+- Never copy: Next.js routes/components, Radix/shadcn React components, Zustand stores, admin UI, `user_watches` dual-write, AI enrichment, goals/submissions.
+- Re-implement UI as thin Svelte 5 components (runes) on shadcn-svelte.
+- V1 stays live on Vercel. Never write to the V1 database, change its env, or touch DNS/Vercel from this repo.

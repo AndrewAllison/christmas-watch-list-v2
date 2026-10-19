@@ -1,0 +1,14 @@
+---
+description: Lean tooling and dependency policy
+alwaysApply: true
+---
+
+# Lean tooling
+
+- Tools are fixed: **Oxlint** (lint), **Biome** (format + import sorting only — its linter is off), **Vitest**, **svelte-check**, **Drizzle**, **Zod**, **pnpm**.
+- Never add ESLint, Prettier, Prisma, Redux/Zustand-style stores, Radix/React ports, Material/Chakra, three.js/Threlte.
+- **No new dependency without asking.** Prefer platform APIs, Svelte built-ins, CSS, and existing shadcn-svelte components. One dependency for one icon/animation is a no.
+- UI primitives come from shadcn-svelte (`pnpm dlx shadcn-svelte@latest add <name>`), copied into `src/lib/components/ui/`.
+- Icons: `@lucide/svelte/icons/<name>` per-icon imports.
+- Free tiers only. Anything needing a paid plan (Workers Paid, Neon paid, etc.) must be raised, not assumed.
+- Run `pnpm check` before committing; CI runs the same plus `pnpm build` and a migration drift check.

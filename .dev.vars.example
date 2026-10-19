@@ -1,0 +1,15 @@
+# Worker runtime secrets for local dev. Copy to .dev.vars — never commit real values.
+# Remote (staging): `wrangler secret put <NAME> --env staging` for each of these.
+
+# `openssl rand -base64 32`
+BETTER_AUTH_SECRET=
+# Local: http://localhost:5173 · Staging: https://christmas-watch-list-v2-staging.<account>.workers.dev
+BETTER_AUTH_URL=http://localhost:5173
+
+# Google OAuth client (add localhost + staging redirect URIs: <BETTER_AUTH_URL>/api/auth/callback/google)
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Resend, for Email OTP
+RESEND_API_KEY=
+EMAIL_FROM="Christmas Watch List <noreply@christmaswatchlist.co.uk>"
