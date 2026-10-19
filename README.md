@@ -40,5 +40,8 @@ Local dev talks to Postgres at the `localConnectionString` in `wrangler.jsonc` (
 1. Create a **new** Neon project (or branch) for V2 — never reuse V1 production.
 2. `DATABASE_URL=<direct url> pnpm db:migrate`
 3. `pnpm wrangler hyperdrive create cwl-v2-staging --connection-string="<url>" --caching-disabled` and paste the id into `env.staging.hyperdrive` in `wrangler.jsonc`, then `pnpm cf:types` to refresh local types.
-4. `pnpm wrangler secret put <NAME> --env staging` for each key in `.dev.vars.example`.
+4. Secrets for each name in `secrets.required` (`wrangler.jsonc`). The first deploy of a new Worker needs them up front: `pnpm wrangler secret bulk secrets.json --env staging`, afterwards `pnpm wrangler secret put <NAME> --env staging`. Optional: `EMAIL_FROM` (a sender on a Resend-verified domain) enables Email OTP.
 5. `pnpm deploy:staging`
+6. Google OAuth client: add the redirect URI `<BETTER_AUTH_URL>/api/auth/callback/google`.
+
+Staging: <https://christmas-watch-list-v2-staging.andrew-allison0411-6bb.workers.dev> · health: `/api/health`. <!-- pragma: allowlist secret -->

@@ -45,7 +45,9 @@ pnpm deploy:staging # build + wrangler deploy --env staging
 - Imports use `#lib/...` (Node subpath imports) **with file extensions**: `#lib/utils.js`, `#lib/components/ui/card/index.js`.
 - Cloudflare bindings: `import { env, waitUntil } from 'cloudflare:workers'`. There is no `event.platform` in Kit 3.
 - DB: `connectDb(env.HYPERDRIVE.connectionString)` **per request**; `waitUntil(db.$client.end())`. Never hold a client at module scope.
-- Better Auth: build the instance per request from `env` (Day 2). Auth reads must not go through a caching Hyperdrive config.
+- Better Auth: `locals.auth()` (built per request by `createAuth` from `env`, shares `locals.db()`). Read the user from `locals.user` / `locals.session` (set in `hooks.server.ts` from the signed cookie cache). Auth reads must not go through a caching Hyperdrive config.
+- SvelteKit 3: hook types from `@sveltejs/kit/hooks`; `building` from `$app/env`; external redirects need `redirect(303, url, { external: [...] })`.
+- Workers Free = 10 ms CPU/request. Keep request-path work tiny; one-off warm-up belongs in the `init` hook (runs at isolate startup). See `docs/decisions.md` D13.
 - Prefer `load` functions + form actions; minimal client state (`$state`), no stores libraries.
 - Validate all external input with Zod (`src/lib/tick.ts` is the pattern).
 - Colours come from theme tokens in `src/routes/layout.css` (`--midnight`, `--berry`, `--mint`, `--holly`, `--gold`, `--paper`). No hard-coded hex in components.
