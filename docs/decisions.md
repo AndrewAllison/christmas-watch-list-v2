@@ -126,3 +126,9 @@ Choices:
 - **Don't remember** → `unknown` (stays in still to watch)
 
 The action also sets `is_favourite`, so a tick from Browse or the Tick tab shows up on My List. Exact dates outside 1 Nov–31 Dec stay in still to watch. Repeat ticks are kept (no unique user + media constraint). The Tick tab filters the festive catalogue by title in the browser; an empty query lists nothing. No new table, column, or dependency.
+
+## 2026-10-20 · Day 6 Season progress
+
+### D17 — Season progress uses the same window and the same watched rule as My List
+
+The Season tab is a clock plus a count. The clock is 1 Nov–31 Dec UTC of `activeSeasonYear`: 61 days. January–October still belong to last season, so before 1 Nov the clock reads finished, and the list matches My List's Nov–Dec label. A favourite is watched with the D15 rule (exact date inside the window, or a year tick for that year). Still-to-watch rows open the Tradition Tick panel. Signed-out Season shows the clock only and does not open a database connection. No new table, column, or dependency.
