@@ -1,5 +1,6 @@
 <script lang="ts">
 	import FavouriteButton from '#lib/components/favourite-button.svelte';
+	import PosterFrame, { posterTone } from '#lib/components/poster-frame.svelte';
 	import TickButton from '#lib/components/tick-button.svelte';
 	import TickPanel from '#lib/components/tick-panel.svelte';
 	import * as Card from '#lib/components/ui/card/index.js';
@@ -33,18 +34,16 @@
 <svelte:head><title>My List · Christmas Watch List</title></svelte:head>
 
 {#snippet row(
-	item: ListTitle
+	item: ListTitle,
+	index: number
 )}
 	<div class="flex items-center gap-3">
-		<div
-			class="bg-midnight-deep flex aspect-[2/3] w-14 shrink-0 items-end overflow-hidden rounded-md ring-1 ring-foreground/10"
-		>
-			{#if item.posterUrl}
-				<img src={item.posterUrl} alt="" class="h-full w-full object-cover" width="56" height="84">
-			{:else}
-				<span class="text-gold p-1 text-[10px] font-semibold">{item.title}</span>
-			{/if}
-		</div>
+		<PosterFrame
+			posterUrl={item.posterUrl}
+			title={item.title}
+			tone={posterTone(index)}
+			class="w-16 shrink-0"
+		/>
 		<div class="min-w-0 flex-1">
 			<p class="truncate font-medium">{item.title}</p>
 			{#if item.year}
@@ -104,9 +103,9 @@
 				<section class="space-y-3" aria-labelledby="list-{section.id}">
 					<h3 id="list-{section.id}" class="text-lg font-bold tracking-tight">{section.title}</h3>
 					<ul class="space-y-3">
-						{#each section.items as item (item.id)}
+						{#each section.items as item, index (item.id)}
 							<li>
-								{@render row(item)}
+								{@render row(item, index)}
 							</li>
 						{/each}
 					</ul>

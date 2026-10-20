@@ -1,11 +1,23 @@
 <script lang="ts">
 	import './layout.css';
+	import { type Component, onMount } from 'svelte';
 	import favicon from '#lib/assets/favicon.svg';
 	import TabBar from '#lib/components/tab-bar.svelte';
 	import { resolve } from '$app/paths';
 	import type { LayoutProps } from './$types';
 
 	let { children, data }: LayoutProps = $props();
+	let FestiveScene = $state<Component | null>(null);
+
+	onMount(() => {
+		let live = true;
+		void import('#lib/effects/festive-scene.svelte').then((mod) => {
+			if (live) FestiveScene = mod.default;
+		});
+		return () => {
+			live = false;
+		};
+	});
 </script>
 
 <svelte:head>
@@ -13,8 +25,13 @@
 	<title>Christmas Watch List</title>
 </svelte:head>
 
-<div class="flex min-h-dvh flex-col pt-[env(safe-area-inset-top)]">
-	<header class="mx-auto w-full max-w-lg px-4 pt-6 pb-4">
+<div class="night-sky" aria-hidden="true"></div>
+{#if FestiveScene}
+	<FestiveScene />
+{/if}
+
+<div class="relative flex min-h-dvh flex-col pt-[calc(env(safe-area-inset-top)+2rem)]">
+	<header class="mx-auto w-full max-w-5xl px-4 pt-2 pb-3 md:px-8 md:pt-4">
 		<div class="flex items-center justify-between gap-4">
 			<p class="text-xs font-semibold tracking-[0.2em] text-gold uppercase">
 				The Christmas double issue
@@ -38,7 +55,7 @@
 	</header>
 
 	<main
-		class="mx-auto w-full max-w-lg flex-1 px-4 pb-[calc(var(--tab-bar-height)+env(safe-area-inset-bottom)+1.5rem)]"
+		class="mx-auto w-full max-w-5xl flex-1 px-4 pb-[calc(var(--tab-bar-height)+env(safe-area-inset-bottom)+1.75rem)] md:px-8 md:pb-28"
 	>
 		{@render children()}
 	</main>

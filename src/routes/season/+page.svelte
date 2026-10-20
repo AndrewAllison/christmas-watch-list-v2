@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PosterFrame, { posterTone } from '#lib/components/poster-frame.svelte';
 	import ProgressMeter from '#lib/components/progress-meter.svelte';
 	import TickButton from '#lib/components/tick-button.svelte';
 	import TickPanel from '#lib/components/tick-panel.svelte';
@@ -18,18 +19,16 @@
 
 {#snippet titleRow(
 	item: SeasonTitle,
-	tick: boolean
+	tick: boolean,
+	index: number
 )}
 	<div class="flex items-center gap-3">
-		<div
-			class="bg-midnight-deep flex aspect-[2/3] w-14 shrink-0 items-end overflow-hidden rounded-md ring-1 ring-foreground/10"
-		>
-			{#if item.posterUrl}
-				<img src={item.posterUrl} alt="" class="h-full w-full object-cover" width="56" height="84">
-			{:else}
-				<span class="text-gold p-1 text-[10px] font-semibold">{item.title}</span>
-			{/if}
-		</div>
+		<PosterFrame
+			posterUrl={item.posterUrl}
+			title={item.title}
+			tone={posterTone(index)}
+			class="w-16 shrink-0"
+		/>
 		<div class="min-w-0 flex-1">
 			<p class="truncate font-medium">{item.title}</p>
 			{#if item.year}
@@ -103,9 +102,9 @@
 					<section class="space-y-3" aria-labelledby="season-still">
 						<h3 id="season-still" class="text-sm font-bold tracking-tight">Still to watch</h3>
 						<ul class="space-y-3">
-							{#each list.stillToWatch as item (item.id)}
+							{#each list.stillToWatch as item, index (item.id)}
 								<li>
-									{@render titleRow(item, true)}
+									{@render titleRow(item, true, index)}
 								</li>
 							{/each}
 						</ul>
@@ -118,9 +117,9 @@
 					<section class="space-y-3" aria-labelledby="season-watched">
 						<h3 id="season-watched" class="text-sm font-bold tracking-tight">Watched</h3>
 						<ul class="space-y-3">
-							{#each list.watchedTitles as item (item.id)}
+							{#each list.watchedTitles as item, index (item.id)}
 								<li>
-									{@render titleRow(item, false)}
+									{@render titleRow(item, false, index)}
 								</li>
 							{/each}
 						</ul>

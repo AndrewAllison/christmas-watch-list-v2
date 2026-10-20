@@ -8,6 +8,7 @@ const item = (
 	year: 1990,
 	posterUrl: null,
 	type: 'movie',
+	genres: null,
 	...over
 });
 

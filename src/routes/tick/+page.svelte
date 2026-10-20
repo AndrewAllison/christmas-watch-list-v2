@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PosterFrame, { posterTone } from '#lib/components/poster-frame.svelte';
 	import TickButton from '#lib/components/tick-button.svelte';
 	import TickPanel from '#lib/components/tick-panel.svelte';
 	import * as Card from '#lib/components/ui/card/index.js';
@@ -65,23 +66,14 @@
 			<p class="text-sm text-muted-foreground">Nothing in the guide matches that.</p>
 		{:else}
 			<ul class="space-y-3">
-				{#each matches as item (item.id)}
+				{#each matches as item, index (item.id)}
 					<li class="flex items-center gap-3">
-						<div
-							class="bg-midnight-deep flex aspect-[2/3] w-14 shrink-0 items-end overflow-hidden rounded-md ring-1 ring-foreground/10"
-						>
-							{#if item.posterUrl}
-								<img
-									src={item.posterUrl}
-									alt=""
-									class="h-full w-full object-cover"
-									width="56"
-									height="84"
-								>
-							{:else}
-								<span class="text-gold p-1 text-[10px] font-semibold">{item.title}</span>
-							{/if}
-						</div>
+						<PosterFrame
+							posterUrl={item.posterUrl}
+							title={item.title}
+							tone={posterTone(index)}
+							class="w-16 shrink-0"
+						/>
 						<div class="min-w-0 flex-1">
 							<p class="truncate font-medium">{item.title}</p>
 							{#if item.year}

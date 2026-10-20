@@ -11,6 +11,7 @@ export async function loadBrowseShelves(db: Db) {
 			year: media.year,
 			posterUrl: media.posterUrl,
 			type: media.type,
+			genres: media.genres,
 			holidayRelevance: media.holidayRelevance
 		})
 		.from(media)

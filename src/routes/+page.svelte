@@ -13,8 +13,8 @@
 	}
 </script>
 
-<section class="space-y-8">
-	<h2 class="text-2xl font-bold tracking-tight">Browse the guide</h2>
+<section class="space-y-10">
+	<h2 class="text-2xl font-bold tracking-tight md:text-3xl">Browse the guide</h2>
 
 	{#if data.shelves.length === 0}
 		<Card.Root>

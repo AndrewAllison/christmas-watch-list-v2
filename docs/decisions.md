@@ -132,3 +132,11 @@ The action also sets `is_favourite`, so a tick from Browse or the Tick tab shows
 ### D17 — Season progress uses the same window and the same watched rule as My List
 
 The Season tab is a clock plus a count. The clock is 1 Nov–31 Dec UTC of `activeSeasonYear`: 61 days. January–October still belong to last season, so before 1 Nov the clock reads finished, and the list matches My List's Nov–Dec label. A favourite is watched with the D15 rule (exact date inside the window, or a year tick for that year). Still-to-watch rows open the Tradition Tick panel. Signed-out Season shows the clock only and does not open a database connection. No new table, column, or dependency.
+
+## 2026-10-20 · Festive effects
+
+### D18 — The night sky is CSS; snow and lights load after first paint
+
+The shell is wider on a desktop (`max-w-5xl`) and the tab bar becomes a dock. Poster frames cycle berry, gold, mint, and holly. Browse cards also show the year, film or series, and up to two genres already stored on `media`. There is no rating on the card: the catalogue does not store a TMDB score, and ratings stay off the core product.
+
+Snow and the bulb string live in `src/lib/effects/festive-scene.svelte`, imported from `onMount`, so they are not on the auth or data path. `prefers-reduced-motion: reduce` drops the snow and holds the bulbs still. The star field is a static background. No new dependency.

@@ -19,9 +19,11 @@
 
 <nav
 	aria-label="Primary"
-	class="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-midnight-deep/90 pb-[env(safe-area-inset-bottom)] backdrop-blur"
+	class="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-midnight-deep/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:bottom-4 md:border-0 md:bg-transparent md:px-4 md:pb-0 md:backdrop-blur-none"
 >
-	<ul class="mx-auto grid h-(--tab-bar-height) max-w-lg grid-cols-4">
+	<ul
+		class="mx-auto grid h-(--tab-bar-height) max-w-lg grid-cols-4 md:max-w-md md:rounded-full md:border md:border-border md:bg-midnight-deep/90 md:shadow-lg md:backdrop-blur-md"
+	>
 		{#each tabs as tab (tab.id)}
 			{@const Icon = icons[tab.id]}
 			{@const active = isTabActive(tab, page.url.pathname)}
