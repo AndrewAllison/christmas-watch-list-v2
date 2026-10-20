@@ -89,3 +89,16 @@ The spikes are first requests in a fresh isolate (lazy module evaluation + JIT);
 Mitigations in place: the Kit `init` hook warms Better Auth once per isolate during **startup** (1 s budget, not the request's 10 ms); cookie-cache session reads skip Better Auth entirely; no password hashing.
 
 If `exceededCpu` (error 1102) shows up in Workers Observability during beta, the next levers are: prerender static shells, trim the bundle (3.5 MB uncompressed), or Workers Paid ($5/mo) — the last one needs Andrew's sign-off (free-tier rule).
+
+## 2026-10-20 · Day 3 catalogue
+
+### D14 — V1 catalogue enums match the V2 shelves
+
+Checked the V1 repo `schema/index.ts` and `app/api/media/route.ts` (the signed-out guide).
+
+- `holiday_relevance` canonical values are `christmas`, `adjacent`, `nonRelated`, or null. Legacy strings (`tradition`, `unrelated`, `setting`, `christmas_adjacent`) were a V1 data migration, not current values. V2's enum matches the canonical set. Browse imports only `christmas` and `adjacent`.
+- `date_precision` is `exact | year | unknown`, same as V2. Not imported on Day 3 (catalogue only).
+- V1 `watch_events.source` also has `onboarding`. V2's enum is `manual | import`. Left alone until watch history is in scope. Do not widen the enum without asking.
+- Public rows are `approval_status = approved` and `hidden = false`. `visibility_status` of `hidden` or `deleted` is skipped. V1 ids are kept. `source_ids.tmdb` is required.
+
+`scripts/migrate-from-v1.ts` is a dry-run until `DATABASE_URL_V1` is set. It sets the V1 session read-only and refuses to run when the two URLs match.

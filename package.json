@@ -26,6 +26,7 @@
 		"db:migrate": "drizzle-kit migrate",
 		"db:check": "drizzle-kit check",
 		"db:studio": "drizzle-kit studio",
+		"db:import-v1": "node --experimental-strip-types scripts/migrate-from-v1.ts",
 		"deploy:staging": "pnpm build && wrangler deploy --env staging"
 	},
 	"imports": {
