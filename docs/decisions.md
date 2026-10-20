@@ -102,3 +102,11 @@ Checked the V1 repo `schema/index.ts` and `app/api/media/route.ts` (the signed-o
 - Public rows are `approval_status = approved` and `hidden = false`. `visibility_status` of `hidden` or `deleted` is skipped. V1 ids are kept. `source_ids.tmdb` is required.
 
 `scripts/migrate-from-v1.ts` is a dry-run until `DATABASE_URL_V1` is set. It sets the V1 session read-only and refuses to run when the two URLs match.
+
+## 2026-10-20 · Day 4 My List
+
+### D15 — My List is favourites, split by this season's ticks
+
+`user_media_state.is_favourite` is the list. No new table or column. A title is **watched** this season when the user has an `exact` tick inside 1 Nov–31 Dec, or a `year` tick for that season's year. `unknown` ("don't remember") leaves it in **still to watch**.
+
+Browse rows toggle the flag. The Tradition Tick panel stays on Day 5, so the Watched section only fills from ticks that already exist (later, the tick action, or an import). Signed-out My List asks you to sign in and does not open a database connection.

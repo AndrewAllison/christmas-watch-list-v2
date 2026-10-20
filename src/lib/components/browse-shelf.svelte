@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { BrowseShelf } from '#lib/browse.js';
+	import FavouriteButton from '#lib/components/favourite-button.svelte';
 
 	let { shelf }: { shelf: BrowseShelf } = $props();
 </script>
@@ -14,7 +15,7 @@
 			<li class="w-28 shrink-0 snap-start">
 				<figure class="space-y-2">
 					<div
-						class="bg-midnight-deep flex aspect-[2/3] items-end overflow-hidden rounded-md ring-1 ring-foreground/10"
+						class="bg-midnight-deep relative flex aspect-[2/3] items-end overflow-hidden rounded-md ring-1 ring-foreground/10"
 					>
 						{#if item.posterUrl}
 							<img
@@ -28,6 +29,15 @@
 						{:else}
 							<span class="text-gold p-2 text-xs font-semibold">{item.title}</span>
 						{/if}
+						<div class="absolute top-1 right-1">
+							<FavouriteButton
+								mediaId={item.id}
+								title={item.title}
+								onList={item.onList === true}
+								next="/"
+								class="bg-midnight/80"
+							/>
+						</div>
 					</div>
 					<figcaption>
 						<p class="line-clamp-2 text-sm font-medium">{item.title}</p>
