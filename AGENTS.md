@@ -71,3 +71,11 @@ src/
 drizzle/             # generated SQL migrations (commit them)
 docs/decisions.md    # decision log — append, don't rewrite
 ```
+
+## Cursor Cloud specific instructions
+
+Cloud Agents boot with Node 24 at `/usr/local/lib/node` and local Postgres 16. Login shells prepend Node 24. If `node -v` prints 22, the platform Node is first on `PATH`; run `export PATH="/usr/local/lib/node/bin:/usr/local/bin:$PATH"` before project commands.
+
+Postgres does not start through systemd here (`policy-rc.d` blocks it). The environment start script runs `sudo pg_ctlcluster 16 main start`, ensures the local database from `wrangler.jsonc` (`localConnectionString`), applies `pnpm db:migrate` against that database, and leaves `pnpm dev` on port 5173. That database is local only. Never point it at the V1 database.
+
+When `.dev.vars` is missing, start writes a random `BETTER_AUTH_SECRET` plus placeholder Google and Resend values so `/` and `/api/health` boot. Google sign-in and email codes do not complete until those placeholders are replaced with real secrets. Email OTP stays off while `EMAIL_FROM` is unset.
