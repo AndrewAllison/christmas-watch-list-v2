@@ -1,9 +1,16 @@
 <script lang="ts">
+	import type { BrowseItem } from '#lib/browse.js';
 	import BrowseShelf from '#lib/components/browse-shelf.svelte';
+	import TickPanel from '#lib/components/tick-panel.svelte';
 	import * as Card from '#lib/components/ui/card/index.js';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
+	let panel = $state<TickPanel | undefined>();
+
+	function openTick(item: BrowseItem) {
+		panel?.open(item);
+	}
 </script>
 
 <section class="space-y-8">
@@ -20,7 +27,9 @@
 		</Card.Root>
 	{:else}
 		{#each data.shelves as shelf (shelf.relevance)}
-			<BrowseShelf {shelf} />
+			<BrowseShelf {shelf} ontick={openTick} />
 		{/each}
 	{/if}
+
+	<TickPanel bind:this={panel} next="/" />
 </section>

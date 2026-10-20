@@ -1,11 +1,14 @@
 <script lang="ts">
 	import FavouriteButton from '#lib/components/favourite-button.svelte';
+	import TickButton from '#lib/components/tick-button.svelte';
+	import TickPanel from '#lib/components/tick-panel.svelte';
 	import * as Card from '#lib/components/ui/card/index.js';
 	import type { ListTitle } from '#lib/my-list.js';
 	import { resolve } from '$app/paths';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
+	let panel = $state<TickPanel | undefined>();
 
 	const sections = $derived(
 		data.list
@@ -48,6 +51,7 @@
 				<p class="text-xs text-muted-foreground">{item.year}</p>
 			{/if}
 		</div>
+		<TickButton title={item.title} ontick={() => panel?.open(item)} />
 		<FavouriteButton mediaId={item.id} title={item.title} onList={true} next="/my-list" />
 	</div>
 {/snippet}
@@ -112,4 +116,6 @@
 			{/if}
 		{/each}
 	{/if}
+
+	<TickPanel bind:this={panel} next="/my-list" />
 </section>
