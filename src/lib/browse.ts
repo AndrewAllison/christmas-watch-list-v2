@@ -12,6 +12,8 @@ export interface BrowseItem {
 	posterUrl: string | null;
 	type: 'movie' | 'tv';
 	holidayRelevance: BrowseRelevance | 'nonRelated';
+	/** Set when the signed-in user has this title on My List. */
+	onList?: boolean;
 }
 
 export interface BrowseShelf {
