@@ -22,6 +22,9 @@
 		aria-valuemax={max}
 		aria-label={label}
 	>
-		<div class="{fill} h-full" style:width="{percent}%"></div>
+		<div
+			class="{fill} h-full transition-[width] duration-500 motion-reduce:transition-none"
+			style:width="{percent}%"
+		></div>
 	</div>
 </div>
