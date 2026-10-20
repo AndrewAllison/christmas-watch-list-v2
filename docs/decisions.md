@@ -110,3 +110,25 @@ Checked the V1 repo `schema/index.ts` and `app/api/media/route.ts` (the signed-o
 `user_media_state.is_favourite` is the list. No new table or column. A title is **watched** this season when the user has an `exact` tick inside 1 Nov–31 Dec, or a `year` tick for that season's year. `unknown` ("don't remember") leaves it in **still to watch**.
 
 Browse rows toggle the flag. The Tradition Tick panel stays on Day 5, so the Watched section only fills from ticks that already exist (later, the tick action, or an import). Signed-out My List asks you to sign in and does not open a database connection.
+
+## 2026-10-20 · Day 5 Tradition Tick
+
+### D16 — A tick is a manual watch event, and it keeps the title on My List
+
+The same panel opens from Browse, My List, and the Tick tab. It posts to `/tick?/record`. The server mints the watch id (`crypto.randomUUID`); `tickInput` stays the stored shape so the Day 7 offline queue can send the same payload.
+
+Choices:
+
+- **Just watched** → `exact`, the time of the request
+- **Christmas Day / Boxing Day** → `exact`, 25 or 26 Dec at 12:00 UTC in the active season year (so they count for Nov–Dec of that year)
+- **Pick a date** → `exact`, that calendar day at 12:00 UTC
+- **Year only** → `year`
+- **Don't remember** → `unknown` (stays in still to watch)
+
+The action also sets `is_favourite`, so a tick from Browse or the Tick tab shows up on My List. Exact dates outside 1 Nov–31 Dec stay in still to watch. Repeat ticks are kept (no unique user + media constraint). The Tick tab filters the festive catalogue by title in the browser; an empty query lists nothing. No new table, column, or dependency.
+
+## 2026-10-20 · Day 6 Season progress
+
+### D17 — Season progress uses the same window and the same watched rule as My List
+
+The Season tab is a clock plus a count. The clock is 1 Nov–31 Dec UTC of `activeSeasonYear`: 61 days. January–October still belong to last season, so before 1 Nov the clock reads finished, and the list matches My List's Nov–Dec label. A favourite is watched with the D15 rule (exact date inside the window, or a year tick for that year). Still-to-watch rows open the Tradition Tick panel. Signed-out Season shows the clock only and does not open a database connection. No new table, column, or dependency.

@@ -1,8 +1,9 @@
 <script lang="ts">
-	import type { BrowseShelf } from '#lib/browse.js';
+	import type { BrowseItem, BrowseShelf } from '#lib/browse.js';
 	import FavouriteButton from '#lib/components/favourite-button.svelte';
+	import TickButton from '#lib/components/tick-button.svelte';
 
-	let { shelf }: { shelf: BrowseShelf } = $props();
+	let { shelf, ontick }: { shelf: BrowseShelf; ontick: (item: BrowseItem) => void } = $props();
 </script>
 
 <section class="space-y-3" aria-labelledby="shelf-{shelf.relevance}">
@@ -38,6 +39,11 @@
 								class="bg-midnight/80"
 							/>
 						</div>
+						<TickButton
+							title={item.title}
+							class="bg-midnight/80 absolute bottom-1 left-1"
+							ontick={() => ontick(item)}
+						/>
 					</div>
 					<figcaption>
 						<p class="line-clamp-2 text-sm font-medium">{item.title}</p>
