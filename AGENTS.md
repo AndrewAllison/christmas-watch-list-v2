@@ -2,7 +2,7 @@
 
 ## Product
 
-Radio Times–style **Christmas tradition tick-list PWA** — favourites you rewatch, ticked off with a date each season. **Not Trakt**: no universal history, no social graph, ratings are not core.
+Radio Times–inspired **Christmas discovery, collection and traditions PWA**. Users discover hidden gems, circle this season's viewing, tick lifetime watches and revisit annual traditions. **Not Trakt**: no social graph or general-purpose tracking. Read `docs/product-vision.md`, `docs/product-domain.md` and `docs/product-roadmap.md` before planning product features.
 
 ## Stack (locked)
 
@@ -10,7 +10,7 @@ SvelteKit 3 + `@sveltejs/adapter-cloudflare` (Workers) · shadcn-svelte (bits-ui
 
 **Cost is a hard constraint: free tiers only** (Workers Free, Hyperdrive Free, Neon Free, Resend Free). Anything that needs a paid plan must be raised first. See `docs/decisions.md`.
 
-## MVP scope — only these
+## Existing MVP baseline (implemented; preserve while evolving)
 
 1. **Browse** guide (curated Christmas shelves)
 2. **My List** (favourites + still-to-watch)
@@ -19,7 +19,7 @@ SvelteKit 3 + `@sveltejs/adapter-cloudflare` (Workers) · shadcn-svelte (bits-ui
 5. PWA with optimistic offline ticks
 6. Lean festive effects (lazy, `prefers-reduced-motion` respected)
 
-**Do NOT add:** admin UI, Mastra/MCP, share, recommendations, goals, mood, advanced search, uploads, EPG/broadcast schedules, web push, three.js/Threlte, feature flags. Delete code instead of hiding it.
+**Product direction:** curated collection completion, lifetime watched history, separate seasonal intentions, and a quick metadata-based discovery finder are now intended future slices. They are **not** blanket permission to implement every roadmap feature; follow `docs/product-roadmap.md` one reviewed slice at a time. The earlier prohibition on recommendations, goals and mood applied to the initial stripped-back MVP and is superseded for *these specifically defined future slices*. Do not add admin UI, Mastra/MCP, sharing/social feeds, uploads, EPG/broadcast schedules, streaming integrations, web push, three.js/Threlte or feature-flag infrastructure without explicit agreement. Prefer removing obsolete code to hiding it.
 
 **Ask before** expanding the schema beyond `media` / `watch_events` / `user_media_state` / Better Auth tables, or adding any dependency.
 
