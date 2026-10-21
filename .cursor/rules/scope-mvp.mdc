@@ -1,14 +1,18 @@
 ---
-description: MVP scope guard — four surfaces + PWA + lean effects; reject parked features
+description: Scope guard — protect shipped MVP while enabling reviewed product-direction slices
 alwaysApply: true
 ---
 
-# MVP scope
+# Scope and product direction
 
-Only build: **Browse**, **My List**, **Tradition Tick**, **Season progress**, PWA offline ticks, lean festive effects.
+The existing four-surface MVP is a stable baseline: **Browse**, **My List**, **Tradition Tick**, **Season progress**, PWA offline ticks and lean festive effects. Preserve existing behaviours unless a planned slice explicitly revises them.
 
-- Reject or flag requests for: admin UI, Mastra/MCP, share, recommendations, goals, mood, advanced search, uploads, EPG/broadcast schedules, web push, ratings-as-core, social features.
-- Routes: the four tab surfaces, auth, offline fallback. No `/admin`, no mega-search.
-- No feature flags — delete code rather than hide it.
-- Schema stays at `media`, `watch_events`, `user_media_state` + Better Auth tables. Ask before adding a table or column.
-- If a task seems to need something parked, stop and say so instead of building a lighter version.
+Read `docs/product-vision.md`, `docs/product-domain.md`, `docs/product-roadmap.md`, `AGENTS.md` and `docs/decisions.md` before proposing product changes.
+
+- **Now permitted as reviewed product directions:** curated collections and their lifetime completion, historical watched records, distinct seasonal intentions, and quick deterministic discovery using time / audience / mood / watched state. Work incrementally; the roadmap is not authorisation to build everything at once.
+- **Still parked:** admin UI, Mastra/MCP, sharing/social, uploads, broadcast schedules, streaming integrations, web push, AI chat or LLM recommendations, complex gamification, rating systems as core, feature flags.
+- Avoid speculative new routes and mega-search. A scoped collection detail view or quick finder is allowed when that slice is approved.
+- Existing schema remains `media`, `watch_events`, `user_media_state` plus Better Auth tables. **Ask before any schema or dependency expansion**, including adding a collection model.
+- Do not equate favourite, historical watched, seasonal intended and this-season watched. Keep V1/V2 history and date precision intact.
+- Free-tier cost constraints, accessibility, mobile performance and `pnpm check` remain mandatory.
+- If work goes beyond an agreed slice, stop and request a product decision rather than improvising.
