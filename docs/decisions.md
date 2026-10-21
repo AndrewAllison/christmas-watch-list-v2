@@ -140,3 +140,13 @@ The Season tab is a clock plus a count. The clock is 1 Nov–31 Dec UTC of `acti
 The shell is wider on a desktop (`max-w-5xl`) and the tab bar becomes a dock. Poster frames cycle berry, gold, mint, and holly. Browse cards also show the year, film or series, and up to two genres already stored on `media`. There is no rating on the card: the catalogue does not store a TMDB score, and ratings stay off the core product.
 
 Snow and the bulb string live in `src/lib/effects/festive-scene.svelte`, imported from `onMount`, so they are not on the auth or data path. `prefers-reduced-motion: reduce` drops the snow and holds the bulbs still. The star field is a static background. No new dependency.
+
+## 2026-10-21 · Product direction after initial MVP
+
+### D19 — Discovery, collection completion and seasonal traditions are complementary product jobs
+
+The stripped-back four-screen MVP remains the working baseline, but its original scope restriction should no longer be read as the final product vision. The product is a Radio Times–inspired Christmas companion with three complementary jobs: discover worthwhile viewing (including hidden gems and a short-duration finder), mark lifetime watched titles and progress through curated collections, and circle/tick a season's intentions and recurring traditions.
+
+**Decision:** add `docs/product-vision.md`, `docs/product-domain.md` and `docs/product-roadmap.md` as product direction for agents; update `AGENTS.md` and Cursor's always-on MVP rule to allow *reviewed future slices* without authorising an uncontrolled feature expansion. Existing implementation of favourites-as-list (D15), season progress (D17) and watch-event handling (D16) remains true until intentionally migrated. No schema, dependencies or production code changed in this documentation PR.
+
+Prioritise a curated collection detail vertical slice and trustworthy historical watched semantics before a more ambitious discovery finder. Preserve free-tier costs, data integrity, date precision and explicit approval for schema changes. TV schedules, social, heavy AI and streaming integrations remain later-stage.
