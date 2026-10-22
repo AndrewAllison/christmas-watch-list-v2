@@ -50,6 +50,7 @@ export function latestReleases<T extends { id: string }>(
 	upNextIds: ReadonlySet<string>,
 	count = latestShelfCount
 ): T[] {
+	if (count < 1) return [];
 	const picked: T[] = [];
 	for (const title of unwatched) {
 		if (upNextIds.has(title.id)) continue;

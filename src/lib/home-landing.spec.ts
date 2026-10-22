@@ -102,4 +102,8 @@ describe('latestReleases', () => {
 			{ id: '2' }
 		]);
 	});
+
+	it('returns nothing when the shelf count is empty', () => {
+		expect(latestReleases([{ id: 'a' }], new Set(), 0)).toEqual([]);
+	});
 });

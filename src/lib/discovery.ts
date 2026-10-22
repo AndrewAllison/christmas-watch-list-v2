@@ -1,4 +1,4 @@
-/** Home discovery membership and release-year order. No database. */
+/** Guide filters, release order, search, and poster actions for Home and Discovery. */
 
 export interface DiscoveryTitle {
 	id: string;
