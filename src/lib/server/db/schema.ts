@@ -17,8 +17,8 @@ import { user } from './auth-schema';
 export * from './auth-schema';
 
 /*
- * Lean V2 schema: media, watch_events, user_media_state (+ Better Auth).
- * Ask before adding tables — see AGENTS.md.
+ * Lean V2 schema: media, watch_events, user_media_state, season_entries (+ Better Auth).
+ * season_entries is the per-year list (D25). Ask before adding further tables.
  */
 
 export const mediaType = pgEnum('media_type', ['movie', 'tv']);
@@ -105,6 +105,22 @@ export const userMediaState = pgTable(
 			.$onUpdate(() => new Date())
 	},
 	(t) => [primaryKey({ columns: [t.userId, t.mediaId] })]
+);
+
+/** One title chosen for one season year. Not a favourite and not a watch. */
+export const seasonEntries = pgTable(
+	'season_entries',
+	{
+		userId: text()
+			.notNull()
+			.references(() => user.id, { onDelete: 'cascade' }),
+		mediaId: uuid()
+			.notNull()
+			.references(() => media.id, { onDelete: 'cascade' }),
+		seasonYear: integer().notNull(),
+		createdAt: timestamp({ withTimezone: true }).notNull().defaultNow()
+	},
+	(t) => [primaryKey({ columns: [t.userId, t.mediaId, t.seasonYear] })]
 );
 
 export type Media = typeof media.$inferSelect;
