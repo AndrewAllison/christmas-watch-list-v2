@@ -86,6 +86,17 @@ export function discoveryNext(query: string, seen: boolean): string {
 	return search ? `/discovery?${search}` : '/discovery';
 }
 
+/** Keep the current page query and name the SvelteKit action. A leading `?` replaces the query, so the action key must be appended. */
+export function posterAction(search: string, onSeason: boolean): string {
+	const params = new URLSearchParams(search.startsWith('?') ? search.slice(1) : search);
+	for (const key of [...params.keys()]) {
+		if (key.startsWith('/')) params.delete(key);
+	}
+	const query = params.toString();
+	const name = onSeason ? '/remove' : '/add';
+	return query ? `?${query}&${name}` : `?${name}`;
+}
+
 export type DiscoveryStatus =
 	| { kind: 'results'; label: string }
 	| { kind: 'empty'; label: string }

@@ -9,6 +9,7 @@ import {
 	filterDiscovery,
 	matchTitles,
 	orderByRelease,
+	posterAction,
 	takeLatest
 } from './discovery';
 
@@ -116,6 +117,15 @@ describe('discoveryNext', () => {
 	it('keeps seen and the query on the discovery path', () => {
 		expect(discoveryNext('', false)).toBe('/discovery');
 		expect(discoveryNext(' Elf ', true)).toBe('/discovery?seen=1&q=Elf');
+	});
+});
+
+describe('posterAction', () => {
+	it('keeps the page query and names add or remove', () => {
+		expect(posterAction('', false)).toBe('?/add');
+		expect(posterAction('?q=Elf&seen=1', false)).toBe('?q=Elf&seen=1&/add');
+		expect(posterAction('q=Elf', true)).toBe('?q=Elf&/remove');
+		expect(posterAction('?/add', false)).toBe('?/add');
 	});
 });
 

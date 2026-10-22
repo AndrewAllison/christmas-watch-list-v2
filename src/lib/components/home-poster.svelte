@@ -3,8 +3,10 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import X from '@lucide/svelte/icons/x';
 	import PosterFrame, { posterTone } from '#lib/components/poster-frame.svelte';
+	import { posterAction } from '#lib/discovery.js';
 	import { cn } from '#lib/utils.js';
 	import { enhance } from '$app/forms';
+	import { page } from '$app/state';
 
 	let {
 		item,
@@ -39,7 +41,7 @@
 	>
 		{#if signedIn}
 			<div class="absolute inset-x-1 bottom-1 flex items-center justify-between">
-				<form method="POST" action={item.onSeason ? '?/remove' : '?/add'} use:enhance>
+				<form method="POST" action={posterAction(page.url.search, item.onSeason)} use:enhance>
 					<input type="hidden" name="mediaId" value={item.id}>
 					<button
 						type="submit"
