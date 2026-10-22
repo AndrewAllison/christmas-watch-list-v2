@@ -1,28 +1,35 @@
 <script lang="ts">
-	import CircleCheck from '@lucide/svelte/icons/circle-check';
+	import Search from '@lucide/svelte/icons/search';
 	import Snowflake from '@lucide/svelte/icons/snowflake';
-	import Star from '@lucide/svelte/icons/star';
 	import Tv from '@lucide/svelte/icons/tv';
 	import type { Component } from 'svelte';
-	import { isTabActive, type TabId, tabs } from '#lib/navigation.js';
+	import { isTabActive, type TabId, tabsFor } from '#lib/navigation.js';
 	import { cn } from '#lib/utils.js';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 
+	let { signedIn }: { signedIn: boolean } = $props();
+
 	const icons: Record<TabId, Component> = {
-		browse: Tv,
-		'my-list': Star,
-		tick: CircleCheck,
+		home: Tv,
+		discovery: Search,
 		season: Snowflake
 	};
+
+	const tabs = $derived(tabsFor(signedIn));
 </script>
 
 <nav
 	aria-label="Primary"
-	class="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-midnight-deep/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:bottom-4 md:border-0 md:bg-transparent md:px-4 md:pb-0 md:backdrop-blur-none"
+	class="fixed inset-x-0 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 px-4"
 >
 	<ul
-		class="mx-auto grid h-(--tab-bar-height) max-w-lg grid-cols-4 md:max-w-md md:rounded-full md:border md:border-border md:bg-midnight-deep/90 md:shadow-lg md:backdrop-blur-md"
+		class={cn(
+			'mx-auto grid h-(--tab-bar-height) max-w-md rounded-full border border-border bg-midnight-deep/70 shadow-lg backdrop-blur-xl',
+			tabs.length === 3 && 'grid-cols-3',
+			tabs.length === 2 && 'grid-cols-2',
+			tabs.length === 1 && 'grid-cols-1'
+		)}
 	>
 		{#each tabs as tab (tab.id)}
 			{@const Icon = icons[tab.id]}
