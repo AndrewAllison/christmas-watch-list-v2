@@ -12,12 +12,6 @@
 	let pending = $state(false);
 
 	const seasonYear = activeSeasonYear();
-	const defaultDay = `${seasonYear}-12-25`;
-	const quickChoices = [
-		{ choice: 'just-watched', label: 'Just watched', hint: '' },
-		{ choice: 'christmas-day', label: 'Christmas Day', hint: `25 Dec ${seasonYear}` },
-		{ choice: 'boxing-day', label: 'Boxing Day', hint: `26 Dec ${seasonYear}` }
-	];
 	const inputClass =
 		'h-11 w-full rounded-md border border-input bg-midnight-deep px-3 text-base text-paper focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none';
 
@@ -49,7 +43,7 @@
 		) {
 			return data.message;
 		}
-		return 'Could not save that tick';
+		return 'Could not save that';
 	}
 
 	function saveTick() {
@@ -61,7 +55,7 @@
 					error = failureMessage(result.data);
 					return;
 				case 'error':
-					error = 'Could not save that tick';
+					error = 'Could not save that';
 					return;
 				case 'redirect':
 				case 'success':
@@ -89,7 +83,7 @@
 			<div class="space-y-4">
 				<div class="flex items-start justify-between gap-3">
 					<div class="min-w-0">
-						<p class="text-xs font-semibold tracking-[0.2em] text-gold uppercase">Tradition tick</p>
+						<p class="text-xs font-semibold tracking-[0.2em] text-gold uppercase">Watched</p>
 						<h2 id="tick-title" class="text-xl font-bold tracking-tight">{item.title}</h2>
 						<p class="text-sm text-muted-foreground">This season is Nov–Dec {seasonYear}.</p>
 					</div>
@@ -102,47 +96,34 @@
 					<p role="alert" class="text-sm text-destructive">{error}</p>
 				{/if}
 
-				<div class="grid gap-2">
-					{#each quickChoices as choice (choice.choice)}
-						<form method="POST" action="/tick?/record" use:enhance={saveTick}>
-							<input type="hidden" name="mediaId" value={item.id}>
-							<input type="hidden" name="choice" value={choice.choice}>
-							<input type="hidden" name="next" value={next}>
-							<Button
-								type="submit"
-								variant="outline"
-								class="min-h-11 w-full justify-between"
-								disabled={pending}
-							>
-								{choice.label}
-								{#if choice.hint}
-									<span class="text-xs text-muted-foreground">{choice.hint}</span>
-								{/if}
-							</Button>
-						</form>
-					{/each}
-				</div>
+				<form method="POST" action="/history?/record" use:enhance={saveTick}>
+					<input type="hidden" name="mediaId" value={item.id}>
+					<input type="hidden" name="choice" value="just-watched">
+					<input type="hidden" name="next" value={next}>
+					<Button type="submit" variant="outline" class="min-h-11 w-full" disabled={pending}>
+						Just watched
+					</Button>
+				</form>
 
-				<form method="POST" action="/tick?/record" class="space-y-2" use:enhance={saveTick}>
+				<form method="POST" action="/history?/record" class="space-y-2" use:enhance={saveTick}>
 					<input type="hidden" name="mediaId" value={item.id}>
 					<input type="hidden" name="choice" value="pick-date">
 					<input type="hidden" name="next" value={next}>
-					<label for="watched-on" class="text-sm font-medium">Pick a date</label>
+					<label for="watched-on" class="text-sm font-medium">Date</label>
 					<input
 						id="watched-on"
 						class={inputClass}
 						type="date"
 						name="watchedOn"
 						required
-						value={defaultDay}
 						disabled={pending}
 					>
 					<Button type="submit" variant="outline" class="min-h-11 w-full" disabled={pending}>
-						Tick this date
+						Watched on this date
 					</Button>
 				</form>
 
-				<form method="POST" action="/tick?/record" class="space-y-2" use:enhance={saveTick}>
+				<form method="POST" action="/history?/record" class="space-y-2" use:enhance={saveTick}>
 					<input type="hidden" name="mediaId" value={item.id}>
 					<input type="hidden" name="choice" value="year">
 					<input type="hidden" name="next" value={next}>
@@ -160,16 +141,22 @@
 						disabled={pending}
 					>
 					<Button type="submit" variant="outline" class="min-h-11 w-full" disabled={pending}>
-						Tick this year
+						Watched this year
 					</Button>
 				</form>
 
-				<form method="POST" action="/tick?/record" use:enhance={saveTick}>
+				<form method="POST" action="/history?/record" use:enhance={saveTick}>
 					<input type="hidden" name="mediaId" value={item.id}>
 					<input type="hidden" name="choice" value="unknown">
 					<input type="hidden" name="next" value={next}>
-					<Button type="submit" variant="outline" class="min-h-11 w-full" disabled={pending}>
-						Don't remember
+					<Button
+						type="submit"
+						variant="outline"
+						class="min-h-11 w-full justify-between"
+						disabled={pending}
+					>
+						I've seen it
+						<span class="text-xs text-muted-foreground">Not sure when</span>
 					</Button>
 				</form>
 			</div>

@@ -12,16 +12,17 @@ SvelteKit 3 + `@sveltejs/adapter-cloudflare` (Workers) · shadcn-svelte (bits-ui
 
 ## Existing MVP baseline (implemented; preserve while evolving)
 
-1. **Browse** guide (curated Christmas shelves)
-2. **My List** (favourites + still-to-watch)
-3. **Tradition Tick** (Just watched · Christmas Day · Boxing Day · Pick a date · Year only · Don't remember)
-4. **Season progress** (1 Nov → 31 Dec)
-5. PWA with optimistic offline ticks
-6. Lean festive effects (lazy, `prefers-reduced-motion` respected)
+1. **Home** (`/`) — three counts for a signed-in person (to watch, watched this season, watched all time), an Up next shelf, and Latest releases. Signed out, Latest releases is look-only.
+2. **Discovery** (`/discovery`) — the Christmas and adjacent guide. Search and Show seen live here. Signed out this is look-only.
+3. **Season** (`/season`, signed in) — this year's `season_entries` list, split into still to watch and watched. `/my-list` redirects here.
+4. **History** (`/history`, signed in, opened from the profile control) — watch log with a count per title. The Watched panel records here. `/watched` and `/tick` redirect here.
+5. A date or a year is Watched. An unknown date is Seen (“I've seen it”) and does not count as watched this season. Recording a watch does not add a seasonal row or a favourite.
+6. PWA with optimistic offline ticks
+7. Lean festive effects (lazy, `prefers-reduced-motion` respected)
 
 **Product direction:** curated collection completion, lifetime watched history, separate seasonal intentions, and a quick metadata-based discovery finder are now intended future slices. They are **not** blanket permission to implement every roadmap feature; follow `docs/product-roadmap.md` one reviewed slice at a time. The earlier prohibition on recommendations, goals and mood applied to the initial stripped-back MVP and is superseded for *these specifically defined future slices*. Do not add admin UI, Mastra/MCP, sharing/social feeds, uploads, EPG/broadcast schedules, streaming integrations, web push, three.js/Threlte or feature-flag infrastructure without explicit agreement. Prefer removing obsolete code to hiding it.
 
-**Ask before** expanding the schema beyond `media` / `watch_events` / `user_media_state` / Better Auth tables, or adding any dependency.
+**Ask before** expanding the schema beyond `media` / `watch_events` / `user_media_state` / `season_entries` / Better Auth tables, or adding any dependency. `season_entries` is the per-year list (D25).
 
 ## Commands
 
@@ -67,7 +68,7 @@ src/
     server/db/       # Drizzle schema + connectDb
     navigation.ts    # tab definitions
     season.ts        # season window helpers
-    tick.ts          # Tradition Tick Zod schema
+    tick.ts          # Watched panel Zod schema; recording posts to /history
 drizzle/             # generated SQL migrations (commit them)
 docs/decisions.md    # decision log — append, don't rewrite
 ```
@@ -79,3 +80,12 @@ Cloud Agents boot with Node 24 at `/usr/local/lib/node` and local Postgres 16. L
 Postgres does not start through systemd here (`policy-rc.d` blocks it). The environment start script runs `sudo pg_ctlcluster 16 main start`, ensures the local database from `wrangler.jsonc` (`localConnectionString`), applies `pnpm db:migrate` against that database, and leaves `pnpm dev` on port 5173. That database is local only. Never point it at the V1 database.
 
 When `.dev.vars` is missing, start writes a random `BETTER_AUTH_SECRET` plus placeholder Google and Resend values so `/` and `/api/health` boot. Google sign-in and email codes do not complete until those placeholders are replaced with real secrets. Email OTP stays off while `EMAIL_FROM` is unset.
+
+## Learned User Preferences
+
+- The approved navigation is Home, Discovery, and Season. Discovery is `/discovery`, the guide. History stays in the profile control. My List folds into Season. The Watched tab stays off the bar. The earlier Home / Discover / My Lists / You proposal stays rejected.
+- Signed-out Home and Discovery are look-only. Season, History, and list or watch actions appear after sign-in. No on-device queue for the seasonal list, and no mandatory onboarding questions.
+
+## Learned Workspace Facts
+
+- Home shows three counts (To watch, This season, All time), an Up next shelf of this season's still-to-watch titles with Open Season under the cards, and a sideways shelf of the latest dozen releases. Search and Show seen live on Discovery. Add and Mark watched stay on the poster. `season_entries` is one row per user, title, and season year (D25, D26). Existing favourite rows are not copied into that list.

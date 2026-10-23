@@ -1,13 +1,12 @@
+import { isGuideMedia } from '#lib/server/catalogue.js';
 import type { Db } from '#lib/server/db/index.js';
 import { type NewWatchEvent, watchEvents } from '#lib/server/db/schema.js';
-import { setFavourite } from '#lib/server/my-list.js';
 import type { TickInput } from '#lib/tick.js';
 
-/** Insert a manual tick and keep the title on My List. False when it is not in the guide. */
+/** Insert a manual watch. Does not favourite the title or add it to a season. */
 export async function recordTick(db: Db, userId: string, tick: TickInput) {
-	const listed = await setFavourite(db, userId, tick.mediaId, true);
-	if (!listed) return false;
-	await db.insert(watchEvents).values(watchEventValues(userId, tick));
+	if (!(await isGuideMedia(db, tick.mediaId))) return false;
+	await db.insert(watchEvents).values(watchEventValues(userId, tick)).onConflictDoNothing();
 	return true;
 }
 

@@ -4,7 +4,7 @@ This is a **prioritised product direction, not blanket authorisation to implemen
 
 ## Current baseline (October 2026)
 
-SvelteKit on Cloudflare Workers, sign-in, migrated Christmas catalogue, Browse / My List / Tick / Season surfaces, watch events and favourites. Technical and cost constraints remain in AGENTS.md and docs/decisions.md.
+SvelteKit on Cloudflare Workers, sign-in, migrated Christmas catalogue, Home / Discovery / Season / History, watch events, and a per-year seasonal list. History is opened from the profile control. `/watched` and `/tick` redirect to `/history`. Technical and cost constraints remain in AGENTS.md and docs/decisions.md.
 
 ## Next: one coherent collection experience
 

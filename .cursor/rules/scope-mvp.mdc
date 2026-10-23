@@ -5,14 +5,14 @@ alwaysApply: true
 
 # Scope and product direction
 
-The existing four-surface MVP is a stable baseline: **Browse**, **My List**, **Tradition Tick**, **Season progress**, PWA offline ticks and lean festive effects. Preserve existing behaviours unless a planned slice explicitly revises them.
+The shipped surfaces are **Home**, **Discovery**, **Season**, and **History** (D26). Home is the landing. Discovery at `/discovery` is the guide. Season is this year's list. History is the lifetime watch log, opened from the profile control. `/my-list` redirects to `/season`. `/watched` and `/tick` redirect to `/history`. Preserve these unless a later slice explicitly revises them.
 
 Read `docs/product-vision.md`, `docs/product-domain.md`, `docs/product-roadmap.md`, `AGENTS.md` and `docs/decisions.md` before proposing product changes.
 
 - **Now permitted as reviewed product directions:** curated collections and their lifetime completion, historical watched records, distinct seasonal intentions, and quick deterministic discovery using time / audience / mood / watched state. Work incrementally; the roadmap is not authorisation to build everything at once.
 - **Still parked:** admin UI, Mastra/MCP, sharing/social, uploads, broadcast schedules, streaming integrations, web push, AI chat or LLM recommendations, complex gamification, rating systems as core, feature flags.
 - Avoid speculative new routes and mega-search. A scoped collection detail view or quick finder is allowed when that slice is approved.
-- Existing schema remains `media`, `watch_events`, `user_media_state` plus Better Auth tables. **Ask before any schema or dependency expansion**, including adding a collection model.
+- Existing schema remains `media`, `watch_events`, `user_media_state`, `season_entries`, plus Better Auth tables. **Ask before any further schema or dependency expansion**, including adding a collection model.
 - Do not equate favourite, historical watched, seasonal intended and this-season watched. Keep V1/V2 history and date precision intact.
 - Free-tier cost constraints, accessibility, mobile performance and `pnpm check` remain mandatory.
 - If work goes beyond an agreed slice, stop and request a product decision rather than improvising.

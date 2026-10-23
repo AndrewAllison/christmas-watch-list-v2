@@ -1,22 +1,13 @@
-import { inArray } from 'drizzle-orm';
-import { groupBrowseShelves } from '#lib/browse.js';
+import { eq } from 'drizzle-orm';
 import type { Db } from '#lib/server/db/index.js';
 import { media } from '#lib/server/db/schema.js';
 
-export async function loadBrowseShelves(db: Db) {
-	const rows = await db
-		.select({
-			id: media.id,
-			title: media.title,
-			year: media.year,
-			posterUrl: media.posterUrl,
-			type: media.type,
-			genres: media.genres,
-			holidayRelevance: media.holidayRelevance
-		})
+/** Christmas and adjacent titles are the guide. Anything else is refused. */
+export async function isGuideMedia(db: Db, mediaId: string) {
+	const [row] = await db
+		.select({ holidayRelevance: media.holidayRelevance })
 		.from(media)
-		.where(inArray(media.holidayRelevance, ['christmas', 'adjacent']))
-		.orderBy(media.title);
-
-	return groupBrowseShelves(rows);
+		.where(eq(media.id, mediaId))
+		.limit(1);
+	return row?.holidayRelevance === 'christmas' || row?.holidayRelevance === 'adjacent';
 }
