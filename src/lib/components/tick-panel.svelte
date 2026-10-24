@@ -1,21 +1,23 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import { formatReleaseDay } from '#lib/release-date.js';
 	import { activeSeasonYear } from '#lib/season.js';
 	import { type ActionResult, enhance } from '$app/forms';
 
 	let { next }: { next: string } = $props();
 
 	let dialog = $state<HTMLDialogElement | null>(null);
-	let item = $state<{ id: string; title: string } | null>(null);
+	let item = $state<{ id: string; title: string; releaseDate: string | null } | null>(null);
 	let error = $state('');
 	let pending = $state(false);
 
 	const seasonYear = activeSeasonYear();
+	const releaseLabel = $derived(item?.releaseDate ? formatReleaseDay(item.releaseDate) : null);
 	const inputClass =
 		'h-11 w-full rounded-md border border-input bg-midnight-deep px-3 text-base text-paper focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none';
 
-	export async function open(target: { id: string; title: string }) {
+	export async function open(target: { id: string; title: string; releaseDate: string | null }) {
 		item = target;
 		error = '';
 		await tick();
@@ -122,6 +124,23 @@
 						Watched on this date
 					</Button>
 				</form>
+
+				{#if releaseLabel}
+					<form method="POST" action="/history?/record" use:enhance={saveTick}>
+						<input type="hidden" name="mediaId" value={item.id}>
+						<input type="hidden" name="choice" value="release-date">
+						<input type="hidden" name="next" value={next}>
+						<Button
+							type="submit"
+							variant="outline"
+							class="min-h-11 w-full justify-between"
+							disabled={pending}
+						>
+							Release date
+							<span class="text-xs text-muted-foreground">{releaseLabel}</span>
+						</Button>
+					</form>
+				{/if}
 
 				<form method="POST" action="/history?/record" class="space-y-2" use:enhance={saveTick}>
 					<input type="hidden" name="mediaId" value={item.id}>

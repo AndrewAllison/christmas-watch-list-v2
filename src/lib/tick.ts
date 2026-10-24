@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isCalendarDay } from '#lib/release-date.js';
 import { activeSeasonYear } from '#lib/season.js';
 
 /**
@@ -46,14 +47,15 @@ export const tickFormInput = z.discriminatedUnion('choice', [
 		watchedOn: z
 			.string()
 			.regex(/^\d{4}-\d{2}-\d{2}$/)
-			.refine(isRealCalendarDay, 'Pick a real date')
+			.refine(isCalendarDay, 'Pick a real date')
 	}),
 	z.object({
 		choice: z.literal('year'),
 		mediaId: z.uuid(),
 		watchedYear: z.coerce.number().pipe(z.int().min(1900).max(2100))
 	}),
-	z.object({ choice: z.literal('unknown'), mediaId: z.uuid() })
+	z.object({ choice: z.literal('unknown'), mediaId: z.uuid() }),
+	z.object({ choice: z.literal('release-date'), mediaId: z.uuid() })
 ]);
 
 export type TickForm = z.infer<typeof tickFormInput>;
@@ -64,7 +66,8 @@ const tickChoice = z.enum([
 	'boxing-day',
 	'pick-date',
 	'year',
-	'unknown'
+	'unknown',
+	'release-date'
 ]);
 
 /** Read a Tradition Tick form. Date and year fields only apply to those choices. */
@@ -96,6 +99,7 @@ export function parseTickForm(fields: {
 		case 'christmas-day':
 		case 'boxing-day':
 		case 'unknown':
+		case 'release-date':
 			return tickFormInput.safeParse({ choice: picked, mediaId: fields.mediaId });
 		default: {
 			const unreachable: never = picked;
@@ -109,23 +113,16 @@ export function utcNoon(year: number, monthIndex: number, day: number): Date {
 	return new Date(Date.UTC(year, monthIndex, day, 12, 0, 0, 0));
 }
 
-function isRealCalendarDay(iso: string): boolean {
-	const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
-	if (!match) return false;
-	const year = Number(match[1]);
-	const month = Number(match[2]);
-	const day = Number(match[3]);
-	const date = utcNoon(year, month - 1, day);
-	return (
-		date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day
-	);
-}
-
 /**
  * Map a panel choice onto the stored tick.
  * Christmas Day and Boxing Day are 25 and 26 Dec of the active season year.
+ * Release date is resolved from the catalogue via `exactWatchOnReleaseDay`.
  */
-export function buildTick(form: TickForm, id: string, now: Date): TickInput {
+export function buildTick(
+	form: Exclude<TickForm, { choice: 'release-date' }>,
+	id: string,
+	now: Date
+): TickInput {
 	const mediaId = form.mediaId;
 	const seasonYear = activeSeasonYear(now);
 	switch (form.choice) {
@@ -148,6 +145,17 @@ export function buildTick(form: TickForm, id: string, now: Date): TickInput {
 			return unreachable;
 		}
 	}
+}
+
+/** An exact watch at noon UTC on the catalogue release day. Null when that day is missing. */
+export function exactWatchOnReleaseDay(
+	id: string,
+	mediaId: string,
+	isoDate: string | null
+): TickInput | null {
+	if (!isoDate || !isCalendarDay(isoDate)) return null;
+	const [year, month, day] = isoDate.split('-').map(Number);
+	return { id, mediaId, datePrecision: 'exact', watchedAt: utcNoon(year, month - 1, day) };
 }
 
 /**

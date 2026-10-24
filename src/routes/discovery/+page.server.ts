@@ -16,6 +16,7 @@ function poster(title: DiscoveryTitle, onSeason: boolean) {
 		title: title.title,
 		year: title.year,
 		posterUrl: title.posterUrl,
+		releaseDate: title.releaseDate,
 		type: title.type,
 		onSeason
 	};

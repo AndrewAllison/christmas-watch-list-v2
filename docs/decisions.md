@@ -150,3 +150,9 @@ The stripped-back four-screen MVP remains the working baseline, but its original
 **Decision:** add `docs/product-vision.md`, `docs/product-domain.md` and `docs/product-roadmap.md` as product direction for agents; update `AGENTS.md` and Cursor's always-on MVP rule to allow *reviewed future slices* without authorising an uncontrolled feature expansion. Existing implementation of favourites-as-list (D15), season progress (D17) and watch-event handling (D16) remains true until intentionally migrated. No schema, dependencies or production code changed in this documentation PR.
 
 Prioritise a curated collection detail vertical slice and trustworthy historical watched semantics before a more ambitious discovery finder. Preserve free-tier costs, data integrity, date precision and explicit approval for schema changes. TV schedules, social, heavy AI and streaming integrations remain later-stage.
+
+## 2026-10-24 · Release date on the Watched panel
+
+### D20 — A release day is a catalogue date, and choosing it records an exact watch
+
+`media.release_date` is a nullable date. `scripts/backfill-release-dates.ts` fills it from TMDB (`release_date` for a movie, `first_air_date` for a series) and stays off the request path. The Watched panel offers that day when it is present. The server reads the column and stores an exact watch at noon UTC. A missing day stays null. Home still sorts by `media.year`.
