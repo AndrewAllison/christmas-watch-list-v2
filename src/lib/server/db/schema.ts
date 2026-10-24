@@ -2,6 +2,7 @@ import { sql } from 'drizzle-orm';
 import {
 	boolean,
 	check,
+	date,
 	index,
 	integer,
 	jsonb,
@@ -48,6 +49,8 @@ export const media = pgTable(
 		type: mediaType().notNull(),
 		genres: jsonb().$type<string[]>(),
 		runtime: integer(),
+		/** Calendar day from TMDB. Null until the offline backfill writes one. */
+		releaseDate: date({ mode: 'string' }),
 		sourceIds: jsonb().$type<MediaSourceIds>().notNull(),
 		holidayRelevance: holidayRelevance().notNull(),
 		createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),

@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { activeSeasonYear, isInSeason, seasonWindow } from './season';
-import { buildTick, filterTickTitles, parseTickForm, type TickTitle, tickInput } from './tick';
+import {
+	buildTick,
+	exactWatchOnReleaseDay,
+	filterTickTitles,
+	parseTickForm,
+	type TickTitle,
+	tickInput
+} from './tick';
 
 const ids = {
 	id: '0b6f1c2e-5d1a-4c3e-9f4b-2a7d8e9c1b3a',
@@ -44,7 +51,13 @@ const tickId = ids.id;
 
 describe('parseTickForm', () => {
 	it('accepts the preset choices with only a media id', () => {
-		for (const choice of ['just-watched', 'christmas-day', 'boxing-day', 'unknown'] as const) {
+		for (const choice of [
+			'just-watched',
+			'christmas-day',
+			'boxing-day',
+			'unknown',
+			'release-date'
+		] as const) {
 			expect(parseTickForm({ choice, mediaId, watchedOn: 'nope' }).success).toBe(true);
 		}
 	});
@@ -103,7 +116,7 @@ describe('buildTick', () => {
 	it('stores a picked date at noon UTC', () => {
 		const parsed = parseTickForm({ choice: 'pick-date', mediaId, watchedOn: '2025-12-24' });
 		expect(parsed.success).toBe(true);
-		if (!parsed.success) return;
+		if (!parsed.success || parsed.data.choice !== 'pick-date') return;
 		const tick = buildTick(parsed.data, tickId, october);
 		expect(tick).toMatchObject({
 			datePrecision: 'exact',
@@ -114,7 +127,7 @@ describe('buildTick', () => {
 	it('stores a year-only tick and a forgotten one', () => {
 		const year = parseTickForm({ choice: 'year', mediaId, watchedYear: '1992' });
 		expect(year.success).toBe(true);
-		if (!year.success) return;
+		if (!year.success || year.data.choice !== 'year') return;
 		expect(buildTick(year.data, tickId, october)).toMatchObject({
 			datePrecision: 'year',
 			watchedYear: 1992
@@ -124,6 +137,18 @@ describe('buildTick', () => {
 			mediaId,
 			datePrecision: 'unknown'
 		});
+	});
+
+	it('stores a catalogue release day at noon UTC', () => {
+		const tick = exactWatchOnReleaseDay(tickId, mediaId, '2025-11-22');
+		expect(tick).toEqual({
+			id: tickId,
+			mediaId,
+			datePrecision: 'exact',
+			watchedAt: new Date('2025-11-22T12:00:00.000Z')
+		});
+		expect(exactWatchOnReleaseDay(tickId, mediaId, null)).toBeNull();
+		expect(exactWatchOnReleaseDay(tickId, mediaId, '2025-02-29')).toBeNull();
 	});
 });
 

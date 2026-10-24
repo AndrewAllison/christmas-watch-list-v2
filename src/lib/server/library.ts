@@ -12,6 +12,7 @@ export async function loadGuide(db: Db): Promise<DiscoveryTitle[]> {
 			title: media.title,
 			year: media.year,
 			posterUrl: media.posterUrl,
+			releaseDate: media.releaseDate,
 			type: media.type
 		})
 		.from(media)
@@ -32,6 +33,7 @@ export interface StoredWatch extends ListWatch {
 	title: string;
 	year: number | null;
 	posterUrl: string | null;
+	releaseDate: string | null;
 	type: 'movie' | 'tv';
 	createdAt: Date;
 }
@@ -43,6 +45,7 @@ export async function loadWatches(db: Db, userId: string): Promise<StoredWatch[]
 			title: media.title,
 			year: media.year,
 			posterUrl: media.posterUrl,
+			releaseDate: media.releaseDate,
 			type: media.type,
 			datePrecision: watchEvents.datePrecision,
 			watchedAt: watchEvents.watchedAt,

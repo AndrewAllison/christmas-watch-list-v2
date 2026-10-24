@@ -25,6 +25,7 @@ function poster(
 		title: string;
 		year: number | null;
 		posterUrl: string | null;
+		releaseDate: string | null;
 		type: DiscoveryTitle['type'];
 	},
 	onSeason: boolean
@@ -34,6 +35,7 @@ function poster(
 		title: title.title,
 		year: title.year,
 		posterUrl: title.posterUrl,
+		releaseDate: title.releaseDate,
 		type: title.type,
 		onSeason
 	};
@@ -74,6 +76,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const others = [...watches.values()].filter((title) => !seasonIds.has(title.id));
 	const split = partitionSeason(listed, others, seasonWindow(year));
 	const upNextIds = new Set(split.stillToWatch.map((title) => title.id));
+	const releaseById = new Map(guide.map((title) => [title.id, title.releaseDate]));
 	const unwatched = filterDiscovery(guide, false, watchedIds, seasonIds);
 	return {
 		signedIn: true as const,
@@ -82,7 +85,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 			split.watched,
 			groupHistory(historyEvents(stored)).length
 		),
-		upNext: split.stillToWatch.map((title) => poster(title, true)),
+		upNext: split.stillToWatch.map((title) =>
+			poster({ ...title, releaseDate: releaseById.get(title.id) ?? null }, true)
+		),
 		upNextMessage: upNextCopy(listed.length, split.stillToWatch.length),
 		latest: latestReleases(unwatched, upNextIds).map((title) => poster(title, false))
 	};

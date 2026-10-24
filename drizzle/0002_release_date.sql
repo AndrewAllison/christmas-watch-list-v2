@@ -1,0 +1,1 @@
+ALTER TABLE "media" ADD COLUMN "release_date" date;

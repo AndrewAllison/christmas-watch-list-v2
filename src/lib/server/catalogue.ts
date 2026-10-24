@@ -11,3 +11,13 @@ export async function isGuideMedia(db: Db, mediaId: string) {
 		.limit(1);
 	return row?.holidayRelevance === 'christmas' || row?.holidayRelevance === 'adjacent';
 }
+
+/** The stored TMDB day, or null when the title has none. */
+export async function mediaReleaseDate(db: Db, mediaId: string) {
+	const [row] = await db
+		.select({ releaseDate: media.releaseDate })
+		.from(media)
+		.where(eq(media.id, mediaId))
+		.limit(1);
+	return row?.releaseDate ?? null;
+}

@@ -17,6 +17,7 @@ const title = (over: Partial<DiscoveryTitle> & Pick<DiscoveryTitle, 'id'>): Disc
 	title: over.id,
 	year: 2000,
 	posterUrl: null,
+	releaseDate: null,
 	type: 'movie',
 	...over
 });

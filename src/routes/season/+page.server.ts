@@ -9,6 +9,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	if (!locals.user) redirect(303, `/sign-in?next=${encodeURIComponent(url.pathname + url.search)}`);
 	const db = await locals.db();
 	const guide = await loadGuide(db);
+	const releaseById = new Map(guide.map((title) => [title.id, title.releaseDate]));
 	const entries = await loadSeasonYears(db, locals.user.id);
 	const watches = titlesFromWatches(await loadWatches(db, locals.user.id));
 	const active = activeSeasonYear();
@@ -41,6 +42,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		title: item.title,
 		year: item.year,
 		posterUrl: item.posterUrl,
+		releaseDate: releaseById.get(item.id) ?? null,
 		onSeason: onList.has(item.id)
 	});
 	return {

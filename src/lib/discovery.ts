@@ -5,6 +5,7 @@ export interface DiscoveryTitle {
 	title: string;
 	year: number | null;
 	posterUrl: string | null;
+	releaseDate: string | null;
 	type: 'movie' | 'tv';
 }
 
